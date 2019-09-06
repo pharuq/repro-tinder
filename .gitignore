@@ -1,0 +1,8 @@
+.DS_STORE
+/.bundle
+/vendor/bundle
+/vendor/bin
+
+.ruby-version
+/log/*
+/tmp
