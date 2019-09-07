@@ -2,9 +2,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'pry'
 
-before do
-  raise "SEARCH_PATH環境変数が指定されていません"  unless ENV['SEARCH_PATH']
-end
+raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PATH
+SEARCH_PATH = ENV['SEARCH_PATH']
 
 get '/' do
   @defined_method = defined_methods.sample
@@ -12,37 +11,33 @@ get '/' do
 end
 
 get '/refresh' do
-  refresh_defined_methods
+  clear_defined_methods
   redirect '/'
 end
 
 helpers do
-
   def defined_methods
     @@defined_methods ||= create_defined_methods
   end
 
-  def refresh_defined_methods
+  def clear_defined_methods
     @@defined_methods = nil
   end
 
   def create_defined_methods
+
     defined_methods = []
 
-    Dir.glob("**/*.rb", base: repo) do |path|
-      File.open(full_path(path), "r") do |file|
+    Dir.glob("**/*.rb", base: SEARCH_PATH) do |file_path|
+      File.open(full_path(file_path), "r") do |file|
         defined_methods.concat(DefinedMethodExtractor.new(file).run)
       end
     end
     defined_methods
   end
 
-  def repo
-    ENV['SEARCH_PATH']
-  end
-
-  def full_path(file)
-    "#{repo}/#{file}"
+  def full_path(file_path)
+    "#{SEARCH_PATH}/#{file_path}"
   end
 
   class DefinedMethodExtractor
@@ -51,22 +46,20 @@ helpers do
       :class_name,
       :class_type,
       :method_name,
-      :path,
       :method_body_lines,
+      :file_path,
     )
-  
-    attr_reader :file, :class_names, :class_type, :current_class_indent, :method_name, :current_method_indent, :defined_methods, :in_method, :method_body_lines
 
     def initialize(file)
       @file = file
       @defined_methods = []
-      @class_names = []
       @class_type = ""
-      @method_name = ""
+      @class_names = []
       @current_class_indent = ""
+      @method_name = ""
+      @method_body_lines = []
       @current_method_indent = ""
       @in_method = false
-      @method_body_lines = []
     end
 
     def run
@@ -118,8 +111,8 @@ helpers do
             d.class_name = resolve_class_name
             d.class_type = @class_type
             d.method_name = add_singleton_prefix_if_needed
-            d.path = @file.path
             d.method_body_lines = @method_body_lines
+            d.file_path = @file.path
           end
         )
         @in_method = false
@@ -128,9 +121,7 @@ helpers do
     end
 
     def save_method_body_lines_if_needed(line)
-      if @in_method
-        @method_body_lines.push(line)
-      end
+      @method_body_lines.push(line) if @in_method
     end
 
     def resolve_class_name
