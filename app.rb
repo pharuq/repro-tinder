@@ -6,7 +6,15 @@ raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PAT
 SEARCH_PATH = ENV['SEARCH_PATH']
 
 get '/' do
-  @defined_method = defined_methods.sample
+  if params[:class_name] && params[:method_name]
+    @defined_method = defined_methods.find { |d| d.class_name == params[:class_name] && d.method_name == params[:method_name] }
+    unless @defined_method
+      not_found { status 404 }
+    end
+  else
+    @defined_method = defined_methods.sample
+  end
+
   erb :index
 end
 
@@ -25,7 +33,6 @@ helpers do
   end
 
   def create_defined_methods
-
     defined_methods = []
 
     Dir.glob("**/*.rb", base: SEARCH_PATH) do |file_path|
