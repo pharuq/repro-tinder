@@ -1,17 +1,22 @@
-<h1>
-<%= "#{@defined_method.class_type} #{@defined_method.class_name}" %>
-</h1>
+<html>
+<head></head>
+<body>
+  <h1>
+    <%= "#{@defined_method.class_type} #{@defined_method.class_name}" %>
+  </h1>
 
-<h2>
-<%= @defined_method.method_name %>
-</h2>
+  <h2>
+    <%= @defined_method.method_name %>
+  </h2>
 
-<pre>
-<% @defined_method.method_body_lines.each do |line| %>
-  <%= line %>
-<% end %>
-</pre>
+  <pre>
+    <% @defined_method.method_body_lines.each do |line| %>
+      <%= line %>
+    <% end %>
+  </pre>
 
-<footer>
-<p><%= "ファイルパス: #{@defined_method.file_path}" %></p>
-</footer>
+  <footer>
+    <p><%= "ファイルパス: #{@defined_method.file_path}" %></p>
+  </footer> %>
+</body>
+</html>
