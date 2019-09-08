@@ -15,7 +15,12 @@ get '/' do
     @defined_method = defined_methods.sample
   end
 
-  erb :index
+  if request.content_type == "application/json"
+    content_type :json
+    return { defined_method: @defined_method.to_h }.to_json
+  else
+    return erb :index
+  end
 end
 
 get '/refresh' do
