@@ -2,8 +2,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'pry'
 
-raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PATH
 SEARCH_PATH = ENV['SEARCH_PATH']
+raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PATH
 
 get '/' do
   if params[:class_name] && params[:method_name]
