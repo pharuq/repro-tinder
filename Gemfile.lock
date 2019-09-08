@@ -21,6 +21,7 @@ GEM
     racksh (1.0.0)
       rack (>= 1.0)
       rack-test (>= 0.5)
+    rb-readline (0.5.5)
     sinatra (2.0.7)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -39,8 +40,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  pry
   pry-byebug
   racksh
+  rb-readline
   sinatra
   sinatra-contrib
 
