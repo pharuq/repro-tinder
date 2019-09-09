@@ -2,8 +2,8 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'pry'
 
-raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PATH
 SEARCH_PATH = ENV['SEARCH_PATH']
+raise "SEARCH_PATH環境変数が指定されていません"  unless SEARCH_PATH
 
 get '/' do
   if params[:class_name] && params[:method_name]
@@ -15,7 +15,12 @@ get '/' do
     @defined_method = defined_methods.sample
   end
 
-  erb :index
+  if request.content_type == "application/json"
+    content_type :json
+    return { defined_method: @defined_method.to_h }.to_json
+  else
+    return erb :index
+  end
 end
 
 get '/refresh' do

@@ -1,17 +1,40 @@
-<h1>
-<%= "#{@defined_method.class_type} #{@defined_method.class_name}" %>
-</h1>
+<html>
+<head>
+  <script src="//unpkg.com/vue"></script>
+  <script src="//unpkg.com/vue-tinder"></script>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+  <div id="app" v-cloak>
+    <tinder
+      ref="tinder"
+      :queue.sync="queue"
+      @submit="submit">
+      <template slot-scope="{data}">
+        <div class="card">
+          <h1 v-text="data.method.class_type + ' ' + data.method.class_name"></h1>
+          <h2 v-text="data.method.method_name"></h2>
+          <pre>
+            <template v-for="line in data.method.method_body_lines">
+              <span v-text="line">
+            </template>
+          </pre>
 
-<h2>
-<%= @defined_method.method_name %>
-</h2>
-
-<pre>
-<% @defined_method.method_body_lines.each do |line| %>
-  <%= line %>
-<% end %>
-</pre>
-
-<footer>
-<p><%= "ファイルパス: #{@defined_method.file_path}" %></p>
-</footer>
+          <footer>
+            <p v-text="'File path: ' + data.method.file_path"></p>
+          </footer>
+        </div>
+      </template>
+      <img class="like-pointer" slot="like" src="./images/like-txt.png">
+      <img class="nope-pointer" slot="nope" src="./images/nope-txt.png">
+      <img class="super-pointer" slot="super" src="./images/super-txt.png">
+    </tinder>
+    <div class="btns">
+      <img src="./images/nope.png" @click="decide('nope')">
+      <img src="./images/super-like.png" @click="decide('super')">
+      <img src="./images/like.png" @click="decide('like')">
+    </div>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>

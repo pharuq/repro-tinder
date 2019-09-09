@@ -9,5 +9,7 @@ gem 'sinatra-contrib'
 
 group :development do
   gem 'racksh'
+  gem 'pry'
+  gem 'rb-readline'
   gem 'pry-byebug'
 end
