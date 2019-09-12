@@ -2,10 +2,18 @@ new Vue({
   el: "#app",
   data: {
     queue: [],
+    measurementableFlg: false,
   },
   methods: {
     getData () {
-      fetch('/', {
+      let url = ''
+      if (this.measurementableFlg) {
+        url = '/?class_name=Marketing::Messageable::Measurementable&method_name=measurement_for_show(unit:, dates:, custom_event: nil)'
+      } else {
+        url = '/'
+      }
+      this.measurementableFlg = false
+      fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -22,12 +30,13 @@ new Vue({
       this.$refs.tinder.decide(choice)
     },
     submit (choice) {
-      switch (choice) {
+      switch (choice.type) {
         case 'nope':
           break;
         case 'like':
           break;
         case 'super':
+          this.measurementableFlg = true;
           break;
       }
       if (this.queue.length < 2) {
